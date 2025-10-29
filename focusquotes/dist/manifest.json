@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "FocusQuotes",
+  "version": "1.0.0",
+  "description": "Save, sync, and highlight quotes across the web.",
+  "permissions": ["storage", "scripting", "activeTab"],
+  "background": {
+    "service_worker": "dist/background/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "dist/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/content/contentScript.js"]
+    }
+  ],
+  "options_page": "dist/options/options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

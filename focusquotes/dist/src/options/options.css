@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+.setting {
+  margin-bottom: 12px;
+}
+button {
+  margin-right: 8px;
+  background-color: #2e89ff;
+  border: none;
+  padding: 6px 10px;
+  color: white;
+  border-radius: 4px;
+}
+#status {
+  margin-top: 10px;
+  color: green;
+}

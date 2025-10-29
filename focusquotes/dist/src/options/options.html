@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FocusQuotes Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <h2>FocusQuotes Settings</h2>
+
+    <div class="setting">
+      <label>
+        <input type="checkbox" id="highlightToggle" /> Enable quote highlighting
+      </label>
+    </div>
+
+    <div class="setting">
+      <label>
+        Storage mode:
+        <select id="storageMode">
+          <option value="local">Local</option>
+          <option value="sync">Sync (cloud)</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="setting">
+      <button id="exportBtn">Export Quotes</button>
+      <button id="importBtn">Import Quotes</button>
+      <input type="file" id="importFile" accept=".json" hidden />
+    </div>
+
+    <div id="status"></div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
