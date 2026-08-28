@@ -1,53 +1,37 @@
-FocusQuotes is a lightweight and user-friendly Chrome extension designed for anyone who loves to collect quotes, notes, or important text from the web. With just a few clicks, you can:
+# FocusQuotes
 
-Save selected text from any webpage instantly.
+FocusQuotes is a Manifest V3 Chrome extension for saving selected text, revisiting its source, highlighting it safely, and moving a quote collection between local and synced browser storage.
 
-Could you highlight saved quotes directly on the pages you revisit?
+## What works
 
-Organize quotes in a simple, searchable pop-up.
+- Save selected text from the active HTTP or HTTPS page
+- Reject duplicate and empty quotes
+- Display saved quotes without injecting untrusted HTML
+- Highlight quotes on their original page without replacing `document.body.innerHTML`
+- Move quotes when switching between local and sync storage
+- Validate and import JSON backups, and export the active collection
+- Validate manifest paths and JavaScript syntax with one command
 
-Choose storage options: local (on your device) or Chrome sync (cloud across devices).
+## Load the extension
 
-Export and import quotes to backup or share your collection.
+1. Open `chrome://extensions`.
+2. Enable **Developer mode**.
+3. Choose **Load unpacked**.
+4. Select the `focusquotes/dist` directory in this repository.
 
-Customize highlighting and storage preferences via the options page.
+Select text on a normal webpage, open FocusQuotes, and choose **Save Selected Quote**.
 
-Why Use FocusQuotes:
+## Verify the package
 
-Perfect for students, writers, researchers, or anyone who wants to keep track of important text online.
+The extension has no build-time dependencies:
 
-Seamlessly integrates with your browsing experience.
+```bash
+cd focusquotes/dist
+npm run check
+```
 
-Minimalistic, fast, and easy to use.
+The check confirms that every manifest asset exists and that all JavaScript entry points parse correctly.
 
-Works on any website without a complicated setup.
+## Privacy
 
-Key Features:
-
-One-click quote saving.
-
-Automatic highlighting on visited pages.
-
-Cloud sync with fallback to local storage.
-
-Import/export functionality.
-
-Clean and intuitive pop-up and settings UI.
-
-Tech Stack:
-
-TypeScript – Strongly typed, maintainable code.
-
-Chrome Extension Manifest V3 – Modern Chrome API support.
-
-HTML/CSS – Lightweight, responsive user interface.
-
-Chrome Storage API – Persistent local and sync storage.
-
-Target Users:
-
-Students collecting research notes.
-
-Writers saving inspirational quotes.
-
-Web users who want to organize key information across multiple websites.
+Quotes stay in Chrome's local or sync storage according to the option you select. FocusQuotes does not send quote content to an external server.
