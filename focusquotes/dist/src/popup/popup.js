@@ -1,40 +1,71 @@
-const saveBtn = document.getElementById("saveBtn") as HTMLButtonElement;
-const quoteList = document.getElementById("quoteList") as HTMLDivElement;
+const saveBtn = document.getElementById("saveBtn");
+const quoteList = document.getElementById("quoteList");
+const statusEl = document.getElementById("status");
+
+async function getQuoteStore() {
+  const { settings } = await chrome.storage.local.get("settings");
+  return settings?.storageMode === "sync" ? chrome.storage.sync : chrome.storage.local;
+}
+
+function setStatus(message, isError = false) {
+  statusEl.textContent = message;
+  statusEl.dataset.kind = isError ? "error" : "success";
+}
 
 saveBtn.addEventListener("click", async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab.id) return;
+  try {
+    saveBtn.disabled = true;
+    setStatus("");
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id || !tab.url) throw new Error("Open a regular web page first.");
 
-  const [{ result }] = await chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: () => window.getSelection()?.toString().trim() || "",
-  });
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => window.getSelection()?.toString().trim() || "",
+    });
 
-  if (!result) {
-    alert("Please highlight some text first!");
-    return;
+    if (!result) throw new Error("Highlight some text on the page first.");
+
+    const response = await chrome.runtime.sendMessage({ type: "SAVE_QUOTE", text: result, sourceUrl: tab.url });
+    if (!response?.ok) throw new Error(response?.error || "The quote could not be saved.");
+    setStatus("Quote saved.");
+    await renderQuotes();
+  } catch (error) {
+    setStatus(error.message, true);
+  } finally {
+    saveBtn.disabled = false;
   }
-
-  const sourceUrl = tab.url || "unknown";
-  await chrome.runtime.sendMessage({ type: "SAVE_QUOTE", text: result, sourceUrl });
-  renderQuotes();
-});
-
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.type === "QUOTE_SAVED") renderQuotes();
 });
 
 async function renderQuotes() {
-  const { quotes = [] } = await chrome.storage.local.get("quotes");
-  quoteList.innerHTML = quotes
-    .map(
-      (q) => `
-      <div class="quote">
-        <b>“${q.text.slice(0, 80)}${q.text.length > 80 ? "..." : ""}”</b><br/>
-        <small>${new URL(q.sourceUrl).hostname}</small>
-      </div>`
-    )
-    .join("");
+  const store = await getQuoteStore();
+  const { quotes = [] } = await store.get("quotes");
+  quoteList.replaceChildren();
+
+  if (!quotes.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "No saved quotes yet.";
+    quoteList.appendChild(empty);
+    return;
+  }
+
+  for (const quote of quotes) {
+    const card = document.createElement("article");
+    const text = document.createElement("strong");
+    const source = document.createElement("small");
+    const excerpt = quote.text.length > 100 ? `${quote.text.slice(0, 100)}…` : quote.text;
+
+    text.textContent = `“${excerpt}”`;
+    try {
+      source.textContent = new URL(quote.sourceUrl).hostname;
+    } catch {
+      source.textContent = "Unknown source";
+    }
+    card.className = "quote";
+    card.append(text, source);
+    quoteList.appendChild(card);
+  }
 }
 
-renderQuotes();
+renderQuotes().catch((error) => setStatus(error.message, true));
