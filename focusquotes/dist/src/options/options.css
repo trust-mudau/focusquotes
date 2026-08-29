@@ -12,8 +12,10 @@ button {
   padding: 6px 10px;
   color: white;
   border-radius: 4px;
+  cursor: pointer;
 }
 #status {
   margin-top: 10px;
   color: green;
 }
+#status[data-kind="error"] { color: #b91c1c; }

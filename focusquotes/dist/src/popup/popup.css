@@ -12,6 +12,9 @@ button {
   border-radius: 6px;
   cursor: pointer;
 }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+#status { min-height: 1.2rem; margin: 8px 0 0; font-size: 13px; color: #166534; }
+#status[data-kind="error"] { color: #b91c1c; }
 #quoteList {
   margin-top: 12px;
   max-height: 200px;
@@ -22,3 +25,6 @@ button {
   border-bottom: 1px solid #ccc;
   font-size: 14px;
 }
+.quote strong, .quote small { display: block; }
+.quote small { color: #64748b; margin-top: 4px; }
+.empty { color: #64748b; font-size: 14px; }
